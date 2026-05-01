@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang='ru'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Vitline — личный кабинет</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:       #22c55e;
+      --green-dark:  #16a34a;
+      --green-light: #dcfce7;
+      --green-mid:   #86efac;
+      --text:        #111827;
+      --text-mid:    #6b7280;
+      --text-light:  #9ca3af;
+      --border:      #e5e7eb;
+      --bg:          #f9fafb;
+      --white:       #ffffff;
+      --radius:      10px;
+      --shadow:      0 1px 3px rgba(0,0,0,.06);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── nav ── */
+    nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .nav-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; }
+
+    .logo-mark {
+      width: 32px; height: 32px;
+      background: var(--green);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .logo-mark svg { width: 18px; height: 18px; fill: white; }
+
+    .logo-name {
+      font-size: 17px; font-weight: 700;
+      color: var(--text); letter-spacing: -.4px;
+    }
+
+    .nav-right { display: flex; align-items: center; gap: 1rem; }
+
+    .nav-user {
+      font-size: 13px; color: var(--text-mid);
+    }
+
+    .nav-user strong { color: var(--text); }
+
+    .btn-sm {
+      font-size: 13px; font-weight: 500;
+      padding: .35rem .8rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--white);
+      color: var(--text-mid);
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .12s, color .12s;
+    }
+
+    .btn-sm:hover { background: var(--bg); color: var(--text); }
+
+    /* ── layout ── */
+    main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+    h2 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 1rem; }
+
+    section { margin-bottom: 2rem; }
+
+    /* ── stat cards ── */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 12px; }
+
+    .stat {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.1rem;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-label { font-size: 12px; color: var(--text-mid); margin-bottom: .35rem; }
+    .stat-val   { font-size: 22px; font-weight: 600; color: var(--text); line-height: 1; }
+    .stat-sub   { font-size: 12px; color: var(--text-light); margin-top: .3rem; }
+
+    .stat-accent .stat-val { color: var(--green-dark); }
+
+    /* ── progress bar ── */
+    .prog-wrap {
+      background: var(--bg);
+      border-radius: 99px;
+      height: 6px;
+      margin-top: .6rem;
+      overflow: hidden;
+    }
+
+    .prog-bar {
+      height: 100%;
+      background: var(--green);
+      border-radius: 99px;
+      transition: width .4s ease;
+    }
+
+    .prog-bar.warn  { background: #f59e0b; }
+    .prog-bar.crit  { background: #ef4444; }
+
+    /* ── tariff badge ── */
+    .tariff-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--green-light);
+      color: var(--green-dark);
+      font-size: 12px; font-weight: 600;
+      padding: .25rem .7rem;
+      border-radius: 99px;
+    }
+
+    /* ── status dot ── */
+    .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      display: inline-block; margin-right: 4px;
+    }
+
+    .dot-on  { background: var(--green); }
+    .dot-off { background: var(--text-light); }
+
+    /* ── table ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 500;
+      color: var(--text-mid);
+      padding: .5rem .75rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+
+    td {
+      padding: .65rem .75rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .table-wrap {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    /* ── WireGuard cards ── */
+    .wg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+
+    .wg-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      box-shadow: var(--shadow);
+    }
+
+    .wg-card-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: .8rem;
+    }
+
+    .wg-label { font-size: 13px; font-weight: 600; }
+
+    .wg-ip {
+      font-size: 12px; color: var(--text-mid);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      margin-bottom: .8rem;
+    }
+
+    .wg-actions { display: flex; gap: 8px; }
+
+    .btn-green {
+      font-size: 12px; font-weight: 600;
+      padding: .3rem .7rem;
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .12s;
+    }
+
+    .btn-green:hover { background: var(--green-dark); }
+
+    .btn-add {
+      display: flex; align-items: center; justify-content: center;
+      gap: 6px;
+      border: 1.5px dashed var(--border);
+      border-radius: var(--radius);
+      background: none;
+      color: var(--text-mid);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 1rem;
+      cursor: pointer;
+      width: 100%;
+      transition: border-color .12s, color .12s;
+    }
+
+    .btn-add:hover { border-color: var(--green); color: var(--green-dark); }
+
+    /* ── live counter ── */
+    .live-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; color: var(--green-dark);
+      background: var(--green-light);
+      padding: .2rem .6rem;
+      border-radius: 99px;
+    }
+
+    .pulse {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: .5; transform: scale(.75); }
+    }
+
+    /* ── empty state ── */
+    .empty {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-mid);
+      font-size: 13px;
+    }
+
+    /* ── alerts ── */
+    .alert {
+      padding: .65rem 1rem;
+      border-radius: 7px;
+      font-size: 13px;
+      margin-bottom: 1.2rem;
+    }
+
+    .alert-info {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1d4ed8;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class='nav-logo' href='/dashboard'>
+    <div class='logo-mark'>
+      <svg viewBox='0 0 24 24'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z'/></svg>
+    </div>
+    <span class='logo-name'>Vitline</span>
+  </a>
+
+  <div class='nav-right'>
+    <div class='nav-user'>привет, <strong>{{ username }}</strong></div>
+    <a class='btn-sm' href='/logout'>Выйти</a>
+  </div>
+</nav>
+
+<main>
+
+  {% if request.query_params.get('wg') == 'new' %}
+  <div class='alert alert-info'>Новый WireGuard-конфиг создан. Скачайте его ниже.</div>
+  {% endif %}
+
+  <!-- ── тариф и статус ── -->
+  <section>
+    <h2>Подключение</h2>
+    <div class='stats'>
+
+      <div class='stat'>
+        <div class='stat-label'>Тариф</div>
+        <div class='stat-val' style='font-size:16px; margin-top:.15rem;'>
+          <span class='tariff-badge'>{{ tariff.name }}</span>
+        </div>
+        <div class='stat-sub'>
+          {{ tariff.rate_down_kbps // 1024 }} / {{ tariff.rate_up_kbps // 1024 }} Мбит/с
+        </div>
+      </div>
+
+      <div class='stat stat-accent'>
+        <div class='stat-label'>Входящий трафик</div>
+        <div class='stat-val'>{{ rx_gb }} <span style='font-size:14px;font-weight:400;'>ГБ</span></div>
+        {% if limit_gb %}
+        <div class='stat-sub'>из {{ limit_gb }} ГБ в месяц</div>
+        <div class='prog-wrap'>
+          <div class='prog-bar {% if used_pct > 90 %}crit{% elif used_pct > 70 %}warn{% endif %}'
+               style='width: {{ [used_pct, 100] | min }}%'></div>
+        </div>
+        {% else %}
+        <div class='stat-sub'>безлимит</div>
+        {% endif %}
+      </div>
+
+      <div class='stat'>
+        <div class='stat-label'>Исходящий трафик</div>
+        <div class='stat-val'>{{ tx_gb }} <span style='font-size:14px;font-weight:400;'>ГБ</span></div>
+        <div class='stat-sub'>за текущий месяц</div>
+      </div>
+
+      <div class='stat'>
+        <div class='stat-label'>Активные сессии</div>
+        <div class='stat-val'>{{ sessions | length }}</div>
+        <div class='stat-sub'>
+          {% if sessions %}
+            <span class='live-badge'><span class='pulse'></span> онлайн</span>
+          {% else %}
+            нет активных
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── живая статистика ── -->
+  {% if sessions %}
+  <section>
+    <h2>Текущие сессии</h2>
+    <div class='table-wrap'>
+      <table>
+        <thead>
+          <tr>
+            <th>NAS / точка входа</th>
+            <th>Начало</th>
+            <th>Входящий</th>
+            <th>Исходящий</th>
+            <th>Статус</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in sessions %}
+          <tr>
+            <td style='font-family: monospace; font-size: 12px;'>{{ s.nas_ip or '—' }}</td>
+            <td>{{ s.started_at }}</td>
+            <td>{{ (s.rx_bytes / 1024 / 1024) | round(1) }} МБ</td>
+            <td>{{ (s.tx_bytes / 1024 / 1024) | round(1) }} МБ</td>
+            <td><span class='dot dot-on'></span>активна</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- ── wireguard ── -->
+  <section>
+    <h2>WireGuard — конфиги устройств</h2>
+
+    <div class='wg-grid'>
+      {% for peer in peers %}
+      <div class='wg-card'>
+        <div class='wg-card-head'>
+          <span class='wg-label'>{{ peer.label or 'Устройство ' + loop.index | string }}</span>
+          <span class='dot {% if peer.enabled %}dot-on{% else %}dot-off{% endif %}'></span>
+        </div>
+        <div class='wg-ip'>{{ peer.client_ip }}</div>
+        <div class='wg-actions'>
+          <a class='btn-green' href='/wireguard/{{ peer.id }}/conf'>Скачать .conf</a>
+        </div>
+      </div>
+      {% endfor %}
+
+      {% if peers | length < 5 %}
+      <form method='post' action='/wireguard/new' style='display:contents'>
+        <button class='btn-add' type='submit'>
+          <svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'><path d='M12 5v14M5 12h14'/></svg>
+          Добавить устройство
+        </button>
+      </form>
+      {% endif %}
+    </div>
+    <p style='font-size:12px; color: var(--text-light); margin-top:.8rem;'>
+      Максимум 5 устройств. Конфиг сканируется в приложении WireGuard как QR-код.
+    </p>
+  </section>
+
+</main>
+
+<script>
+  async function refreshStats() {
+    try {
+      const r = await fetch('/api/stats');
+      const d = await r.json();
+    } catch(e) {}
+  }
+  setInterval(refreshStats, 15000);
+</script>
+
+</body>
+</html>

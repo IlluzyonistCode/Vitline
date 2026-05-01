@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang='ru'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Vitline — вход</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:       #22c55e;
+      --green-dark:  #16a34a;
+      --green-light: #dcfce7;
+      --green-mid:   #86efac;
+      --text:        #111827;
+      --text-mid:    #6b7280;
+      --text-light:  #9ca3af;
+      --border:      #e5e7eb;
+      --bg:          #f9fafb;
+      --white:       #ffffff;
+      --radius:      10px;
+      --shadow:      0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 380px;
+      padding: 2.5rem 2rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 2rem;
+    }
+
+    .logo-mark {
+      width: 38px;
+      height: 38px;
+      background: var(--green);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-mark svg { width: 22px; height: 22px; fill: white; }
+
+    .logo-name {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -.5px;
+    }
+
+    .logo-tag {
+      font-size: 11px;
+      color: var(--text-mid);
+      margin-top: 1px;
+    }
+
+    h1 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: .4rem;
+    }
+
+    .sub { font-size: 13px; color: var(--text-mid); margin-bottom: 1.8rem; }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: .35rem;
+    }
+
+    input[type='text'],
+    input[type='password'] {
+      width: 100%;
+      padding: .55rem .85rem;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--white);
+      outline: none;
+      transition: border-color .15s;
+      margin-bottom: 1.1rem;
+    }
+
+    input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(34,197,94,.12); }
+
+    .btn {
+      width: 100%;
+      padding: .65rem;
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 7px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+      margin-top: .4rem;
+    }
+
+    .btn:hover  { background: var(--green-dark); }
+    .btn:active { transform: scale(.98); }
+
+    .error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 7px;
+      color: #dc2626;
+      font-size: 13px;
+      padding: .6rem .85rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-light);
+      margin-top: 1.8rem;
+    }
+  </style>
+</head>
+<body>
+<div class='card'>
+  <div class='logo'>
+    <div class='logo-mark'>
+      <svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'>
+        <path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z'/>
+      </svg>
+    </div>
+    <div>
+      <div class='logo-name'>Vitline</div>
+      <div class='logo-tag'>приватный интернет</div>
+    </div>
+  </div>
+
+  <h1>Добро пожаловать</h1>
+  <p class='sub'>Войдите, чтобы управлять подключением</p>
+
+  {% if error %}
+  <div class='error'>{{ error }}</div>
+  {% endif %}
+
+  <form method='post' action='/login'>
+    <label for='username'>Логин</label>
+    <input type='text' id='username' name='username' placeholder='ваш логин' autocomplete='username' required>
+
+    <label for='password'>Пароль</label>
+    <input type='password' id='password' name='password' placeholder='••••••••' autocomplete='current-password' required>
+
+    <button class='btn' type='submit'>Войти</button>
+  </form>
+
+  <div class='footer'>Vitline · приватный провайдер без цензуры</div>
+</div>
+</body>
+</html>

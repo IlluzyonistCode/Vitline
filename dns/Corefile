@@ -1,0 +1,52 @@
+# /etc/vitline/Corefile
+#
+# CoreDNS конфиг для Vitline.
+# Приватный резолвер: DNS-over-TLS до Quad9 + Cloudflare.
+# Абонентские запросы НЕ логируются.
+#
+# Запуск: coredns -conf /etc/vitline/Corefile
+# Systemd: см. vitline-dns.service
+
+. {
+    # ── форварды через DNS-over-TLS ──────────────────────────────────────────
+    # Quad9 (не собирает данные, блокирует только малварь)
+    # Cloudflare как резерв
+    forward . tls://9.9.9.9 tls://149.112.112.112 tls://1.1.1.1 tls://1.0.0.1 {
+        tls_servername  dns.quad9.net
+        health_check    5s
+        max_fails       3
+        expire          10s
+        policy          sequential
+    }
+
+    # ── кэш ─────────────────────────────────────────────────────────────────
+    cache {
+        success  9984  3600    # кэшировать успешные ответы до 1 часа
+        denial   9984  300     # NXDOMAIN — 5 минут
+        servfail 30            # SERVFAIL — 30 секунд
+    }
+
+    # ── rate-limit от флуда ──────────────────────────────────────────────────
+    # (требует плагин ratelimit: github.com/coredns/ratelimit)
+    # ratelimit 100
+
+    # ── НЕ логируем запросы абонентов ────────────────────────────────────────
+    # log  ← закомментировано намеренно
+
+    # только ошибки
+    errors
+
+    # ── здоровье сервиса ─────────────────────────────────────────────────────
+    health :8082 {
+        lameduck 5s
+    }
+
+    # ── метрики для Prometheus / Grafana ─────────────────────────────────────
+    prometheus :9153
+}
+
+# ── локальная зона Vitline ───────────────────────────────────────────────────
+vitline.internal {
+    file /etc/vitline/zones/vitline.internal
+    log
+}
